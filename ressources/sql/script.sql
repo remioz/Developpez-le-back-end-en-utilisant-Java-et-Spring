@@ -1,37 +1,35 @@
+CREATE DATABASE IF NOT EXISTS rentalsOc;
+USE rentalsOc;
+
 CREATE TABLE `USERS` (
-  `id` integer PRIMARY KEY AUTO_INCREMENT,
-  `email` varchar(255),
-  `name` varchar(255),
-  `password` varchar(255),
-  `created_at` timestamp,
-  `updated_at` timestamp
+  `id` INT PRIMARY KEY AUTO_INCREMENT,
+  `email` VARCHAR(255) UNIQUE,
+  `name` VARCHAR(255),
+  `password` VARCHAR(255),
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 CREATE TABLE `RENTALS` (
-  `id` integer PRIMARY KEY AUTO_INCREMENT,
-  `name` varchar(255),
-  `surface` numeric,
-  `price` numeric,
-  `picture` varchar(255),
-  `description` varchar(2000),
-  `owner_id` integer NOT NULL,
-  `created_at` timestamp,
-  `updated_at` timestamp
+  `id` INT PRIMARY KEY AUTO_INCREMENT,
+  `name` VARCHAR(255),
+  `surface` DECIMAL(10, 2),
+  `price` DECIMAL(10, 2),
+  `picture` VARCHAR(255),
+  `description` VARCHAR(2000),
+  `owner_id` INT NOT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (`owner_id`) REFERENCES `USERS` (`id`)
 );
 
 CREATE TABLE `MESSAGES` (
-  `id` integer PRIMARY KEY AUTO_INCREMENT,
-  `rental_id` integer,
-  `user_id` integer,
-  `message` varchar(2000),
-  `created_at` timestamp,
-  `updated_at` timestamp
+  `id` INT PRIMARY KEY AUTO_INCREMENT,
+  `rental_id` INT,
+  `user_id` INT,
+  `message` VARCHAR(2000),
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (`rental_id`) REFERENCES `RENTALS` (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `USERS` (`id`)
 );
-
-CREATE UNIQUE INDEX `USERS_index` ON `USERS` (`email`);
-
-ALTER TABLE `USERS` ADD FOREIGN KEY (`id`) REFERENCES `RENTALS` (`owner_id`);
-
-ALTER TABLE `USERS` ADD FOREIGN KEY (`id`) REFERENCES `MESSAGES` (`user_id`);
-
-ALTER TABLE `RENTALS` ADD FOREIGN KEY (`id`) REFERENCES `MESSAGES` (`rental_id`);
